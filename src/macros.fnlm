@@ -1,0 +1,50 @@
+(fn dpi [size ?s]
+  `((. (require :beautiful.xresources) :apply_dpi) ,size ,?s))
+
+(fn defvar [name value]
+  `(local ,name (,`(require ,:fnl.core.variable) ,value)))
+
+; (fn defpoll [name interval exec ?transform]
+;   `(local ,name (let [v# ((require ,:fnl.core.variable) (,exec))]
+;                   (v#:poll ,interval ,exec ,?transform))))
+
+(fn defpoll [name interval exec ?transform]
+  `(local ,name (let [v# ((require ,:fnl.core.variable) (if (= (type ,exec)
+                                                               :function)
+                                                            (,exec)
+                                                            ,nil))]
+                  (v#:poll ,interval ,exec ,?transform))))
+
+(fn set! [v value]
+  `(: ,v :set ,value))
+
+(fn get! [v value]
+  `(: ,v :get ,value))
+
+(fn async [Fn]
+  `(fn [...]
+     (((. (require :lgi) :Gio :Async :start) Fn) ...)))
+
+(fn string? [object]
+  `(= (type ,object) :string))
+
+(fn table? [object]
+  `(= (type ,object) :string))
+
+(fn boolean? [object]
+  `(= (type ,object) :boolean))
+
+(fn nil? [object]
+  `(= (type ,object) :nil))
+
+{: defvar
+ : defpoll
+ : set!
+ : get!
+ : async
+ : dpi
+ : string?
+ : table?
+ : boolean?
+ : nil?}
+
